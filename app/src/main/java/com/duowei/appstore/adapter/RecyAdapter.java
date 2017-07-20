@@ -89,10 +89,21 @@ public class RecyAdapter extends RecyclerView.Adapter<RecyAdapter.ViewHold>{
                 if(!file.exists()){
                     file.mkdir();
                 }
-                Aria.download(context)
-                        .load(loadMsg.url)
-                        .setDownloadPath(SDPATH+loadMsg.name+".apk")
-                        .start();
+                if(holder.mButton.getText().toString().equals(context.getResources().getString(R.string.load))){
+                    Aria.download(context)
+                            .load(loadMsg.url)
+                            .setDownloadPath(SDPATH+loadMsg.name+".apk")
+                            .start();
+                    holder.mButton.setText(context.getResources().getString(R.string.cancel));
+                }else if(holder.mButton.getText().toString().equals(context.getResources().getString(R.string.cancel))){
+                    Aria.download(context)
+                            .load(loadMsg.url)
+                            .cancel();
+                    holder.mButton.setText(context.getResources().getString(R.string.load));
+                    isLoad=false;
+                    index=-1;
+                    notifyDataSetChanged();
+                }
             }
         });
     }
