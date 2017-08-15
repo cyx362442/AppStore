@@ -11,7 +11,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.arialyy.annotations.Download;
 import com.arialyy.aria.core.Aria;
+import com.arialyy.aria.core.download.DownloadTask;
 import com.duowei.appstore.R;
 import com.duowei.appstore.bean.LoadMsg;
 import com.duowei.appstore.widget.HorizontalProgressBarWithNumber;
@@ -40,17 +42,14 @@ public class RecyAdapter extends RecyclerView.Adapter<RecyAdapter.ViewHold>{
 
     public void setProgress(int progress) {
         this.progress = progress;
-        notifyDataSetChanged();
     }
 
     public void setIndex(int index) {
         this.index = index;
-        notifyDataSetChanged();
     }
 
     public void setLoad(boolean load) {
         isLoad = load;
-        notifyDataSetChanged();
     }
 
     @Override

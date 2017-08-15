@@ -3,6 +3,9 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="main_title">主页</string>
+    <string name="setting_title">设置</string>
+
     <string name="load">下载</string>
     <string name="cancel">取消</string>
     <string name="update">更新</string>

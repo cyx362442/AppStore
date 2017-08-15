@@ -1,35 +1,36 @@
 package com.duowei.appstore;
 
 import android.Manifest;
-import android.app.FragmentManager;
 import android.os.Build;
+import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.arialyy.annotations.Download;
 import com.arialyy.aria.core.Aria;
-import com.arialyy.aria.core.download.DownloadTask;
-import com.duowei.appstore.fragment.AppLoadFragment;
-import com.duowei.appstore.fragment.BannerFragment;
+import com.duowei.appstore.fragment.MainFragment;
+import com.duowei.appstore.fragment.SettingFragment;
 import com.duowei.appstore.util.OnPermissionCallback;
 import com.duowei.appstore.util.PermissionManager;
 
 public class MainActivity extends AppCompatActivity {
-
-    private AppLoadFragment mLoadFragment;
+    private View indicator = null;
+    private FragmentTabHost mTabHost;
+    private int []title={R.string.main_title,R.string.setting_title};
+    private int[]layout={R.layout.home_indicator,R.layout.setting_indicator};
+    private Class[]cls={MainFragment.class,SettingFragment.class};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Aria.download(this).setMaxSpeed(100.0);//下载限速
-        Aria.get(this).getDownloadConfig().setMaxTaskNum(1);//允同时下载任务数量
-
-        initFragment();
-
+        setContentView(R.layout.activity_main2);
         checkSD();
+        mTabHost = (FragmentTabHost) findViewById(R.id.tablehost);
+        initTabHost();
     }
+
     //检查内存是否可用
     private void checkSD() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -54,30 +55,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void initFragment() {
-        BannerFragment bannerFragment = new BannerFragment();
-        mLoadFragment = new AppLoadFragment();
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.frame1,bannerFragment).commit();
-        fragmentManager.beginTransaction().replace(R.id.frame2, mLoadFragment).commit();
+    private void initTabHost() {
+        mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
+        for(int i=0;i<title.length;i++){
+            indicator = getIndicatorView(getResources().getString(title[i]),layout[i]);
+            mTabHost.addTab(mTabHost.newTabSpec(getResources().getString(title[i]))
+                    .setIndicator(indicator),cls[i],null);
+        }
     }
-    //开始下载
-    @Download.onTaskStart
-    void taskStart(DownloadTask task) {
-        mLoadFragment.setLoad(true);
-    }
-    //下载中
-    @Download.onTaskRunning
-    protected void running(DownloadTask task) {
-        long currentProgress = task.getCurrentProgress();
-        long fileSize = task.getFileSize();
-        int i = (int) ((currentProgress * 100) / fileSize);
-        mLoadFragment.setProgress(i);
-    }
-    //下载完成
-    @Download.onTaskComplete
-    void taskComplete(DownloadTask task) {
-        mLoadFragment.setIndex(-1);
-        mLoadFragment.setLoad(false);
+
+    private View getIndicatorView(String name, int layoutId) {
+        View v = getLayoutInflater().inflate(layoutId, null);
+        TextView tv = v.findViewById(R.id.tabText);
+        tv.setText(name);
+        return v;
     }
 }

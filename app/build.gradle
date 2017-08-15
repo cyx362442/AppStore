@@ -30,6 +30,9 @@ dependencies {
     compile 'com.arialyy.aria:aria-core:3.2.0'
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.youth.banner:banner:1.4.9'
+    compile "com.github.bumptech.glide:glide:3.7.0"
+    compile 'com.android.support:support-v4:26.+'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.arialyy.aria:aria-compiler:3.2.0'
 }

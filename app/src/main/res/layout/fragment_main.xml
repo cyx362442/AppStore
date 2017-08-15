@@ -1,0 +1,20 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@color/gray"
+             tools:context="com.duowei.appstore.fragment.MainFragment">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <FrameLayout
+                    android:id="@+id/bannerFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp"></FrameLayout>
+                <FrameLayout
+                    android:id="@+id/loadFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"></FrameLayout>
+            </LinearLayout>
+</FrameLayout>

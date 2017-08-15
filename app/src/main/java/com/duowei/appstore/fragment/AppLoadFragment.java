@@ -1,16 +1,18 @@
 package com.duowei.appstore.fragment;
 
 
-import android.app.Fragment;
-import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.arialyy.annotations.Download;
 import com.arialyy.aria.core.Aria;
+import com.arialyy.aria.core.download.DownloadTask;
 import com.duowei.appstore.R;
 import com.duowei.appstore.adapter.RecyAdapter;
 import com.duowei.appstore.adapter.SpaceItemDecoration;
@@ -35,6 +37,7 @@ public class AppLoadFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View inflate = inflater.inflate(R.layout.fragment_app_load, container, false);
+
         mList=new ArrayList<>();
         mList.add(new LoadMsg("/dw1","http://7xpj8w.com1.z0.glb.clouddn.com/video15.zip"));
         mList.add(new LoadMsg("/dw2","http://7xpj8w.com1.z0.glb.clouddn.com/app1.apk"));
@@ -50,25 +53,40 @@ public class AppLoadFragment extends Fragment {
         return inflate;
     }
 
-    public void setProgress(int progress){
-        mAdapter.setProgress(progress);
-    }
-    public void setIndex(int index){
-        mAdapter.setIndex(index);
+    //开始下载
+    @Download.onTaskStart
+    void taskStart(DownloadTask task) {
+        mAdapter.setLoad(true);
+        mAdapter.notifyDataSetChanged();
     }
 
-    public void setLoad(boolean isLoad){
-        mAdapter.setLoad(isLoad);
+    //下载中
+    @Download.onTaskRunning
+    protected void running(DownloadTask task) {
+        long currentProgress = task.getCurrentProgress();
+        long fileSize = task.getFileSize();
+        int i = (int) ((currentProgress * 100) / fileSize);
+        mAdapter.setProgress(i);
+        mAdapter.notifyDataSetChanged();
     }
+
+    //下载完成
+    @Download.onTaskComplete
+    void taskComplete(DownloadTask task) {
+        mAdapter.setIndex(-1);
+        mAdapter.setLoad(false);
+        mAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onStart() {
         super.onStart();
-        Aria.download(getActivity()).register();
+        Aria.download(AppLoadFragment.this).register();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        Aria.download(getActivity()).unRegister();
+        Aria.download(AppLoadFragment.this).unRegister();
     }
 }
