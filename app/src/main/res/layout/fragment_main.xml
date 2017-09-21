@@ -11,10 +11,12 @@
                 <FrameLayout
                     android:id="@+id/bannerFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="240dp"></FrameLayout>
+                    android:layout_height="0dp"
+                    android:layout_weight="1.5"></FrameLayout>
                 <FrameLayout
                     android:id="@+id/loadFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"></FrameLayout>
+                    android:layout_height="0dp"
+                    android:layout_weight="3"></FrameLayout>
             </LinearLayout>
 </FrameLayout>

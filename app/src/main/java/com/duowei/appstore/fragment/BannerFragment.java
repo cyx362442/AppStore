@@ -12,6 +12,7 @@ import com.duowei.appstore.bannerload.GlideImageLoader;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
+import com.youth.banner.transformer.CubeOutTransformer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +39,7 @@ public class BannerFragment extends Fragment implements OnBannerListener {
         banner.setImages(arrayList)
                 .setImageLoader(new GlideImageLoader())
                 .setOnBannerListener(BannerFragment.this)
+                .setBannerAnimation(CubeOutTransformer.class)
                 .start();
         return inflate;
     }

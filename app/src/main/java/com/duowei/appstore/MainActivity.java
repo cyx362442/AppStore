@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.arialyy.aria.core.Aria;
 import com.duowei.appstore.fragment.MainFragment;
 import com.duowei.appstore.fragment.SettingFragment;
 import com.duowei.appstore.util.OnPermissionCallback;
@@ -25,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_main);
         checkSD();
         mTabHost = (FragmentTabHost) findViewById(R.id.tablehost);
         initTabHost();

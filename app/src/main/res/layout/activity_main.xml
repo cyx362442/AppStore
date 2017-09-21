@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.duowei.appstore.Main2Activity">
+    tools:context="com.duowei.appstore.MainActivity">
     <FrameLayout
         android:id="@+id/realtabcontent"
         android:layout_width="match_parent"

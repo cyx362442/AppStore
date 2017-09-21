@@ -10,6 +10,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:focusable="true"
+                android:drawablePadding="-0.5dp"
                 android:drawableTop="@drawable/select_home"
                 />
 </LinearLayout>

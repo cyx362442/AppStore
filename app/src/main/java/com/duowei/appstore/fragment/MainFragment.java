@@ -24,7 +24,7 @@ public class MainFragment extends Fragment {
         // Inflate the layout for this fragment
         View inflate = inflater.inflate(R.layout.fragment_main, container, false);
         Aria.download(MainFragment.this).setMaxSpeed(100.0);//下载限速
-        Aria.get(MainFragment.this).getDownloadConfig().setMaxTaskNum(1);//允同时下载任务数量
+        Aria.get(MainFragment.this).getDownloadConfig().setMaxTaskNum(5);//允同时下载任务数量
 
         initFragment();
         return inflate;

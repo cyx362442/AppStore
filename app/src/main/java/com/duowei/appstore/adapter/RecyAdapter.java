@@ -3,7 +3,6 @@ package com.duowei.appstore.adapter;
 import android.content.Context;
 import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +10,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.arialyy.annotations.Download;
 import com.arialyy.aria.core.Aria;
-import com.arialyy.aria.core.download.DownloadTask;
+import com.bumptech.glide.Glide;
 import com.duowei.appstore.R;
-import com.duowei.appstore.bean.LoadMsg;
+import com.duowei.appstore.bean.APKData;
 import com.duowei.appstore.widget.HorizontalProgressBarWithNumber;
 
 import java.io.File;
@@ -27,14 +25,13 @@ import java.util.List;
 
 public class RecyAdapter extends RecyclerView.Adapter<RecyAdapter.ViewHold>{
     Context context;
-    List<LoadMsg> mList;
+    List<APKData> mList;
     private int progress=0;
     private int index=-1;
-    private boolean isLoad=false;
     private final LayoutInflater mLayoutInflater;
-    private final String SDPATH = Environment.getExternalStorageDirectory() + "/DWstore";
+    private final String SDPATH = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "DWstore/";
 
-    public RecyAdapter(Context context, List<LoadMsg> list) {
+    public RecyAdapter(Context context, List<APKData> list) {
         this.context = context;
         mList = list;
         mLayoutInflater = LayoutInflater.from(context);
@@ -48,8 +45,8 @@ public class RecyAdapter extends RecyclerView.Adapter<RecyAdapter.ViewHold>{
         this.index = index;
     }
 
-    public void setLoad(boolean load) {
-        isLoad = load;
+    public void setList(List<APKData>list){
+        this.mList=list;
     }
 
     @Override
@@ -65,20 +62,37 @@ public class RecyAdapter extends RecyclerView.Adapter<RecyAdapter.ViewHold>{
 
     @Override
     public void onBindViewHolder(final ViewHold holder, final int position) {
-        final LoadMsg loadMsg = mList.get(position);
-        holder.mTextView.setText(loadMsg.name);
-        if(index==position){
-            holder.mProgress.setVisibility(View.VISIBLE);
-            holder.mProgress.setProgress(progress);
-        }else{
-            holder.mProgress.setVisibility(View.GONE );
-        }
-        if(index!=position&&isLoad==true){
-            holder.mButton.setEnabled(false);
-            holder.mButton.setTextColor(context.getResources().getColor(R.color.gray));
-        }else{
+        final APKData apkData = mList.get(position);
+        holder.mTextView.setText(apkData.getAppName());
+        Glide.with(context).load(apkData.getImgUrl()).fitCenter().into(holder.mImageView);
+
+        if(index!=-1){//存在下载的APK
+            if(apkData.isLoad()==true){//下载中的那个APK
+                holder.mButton.setEnabled(true);
+                holder.mButton.setTextColor(context.getResources().getColor(R.color.blue_low));
+                holder.mButton.setText(context.getResources().getString(R.string.cancel));
+
+                holder.mProgress.setVisibility(View.VISIBLE);
+                holder.mProgress.setProgress(progress);
+            }else{//不在下载中的APK,等待中^
+                holder.mButton.setEnabled(false);
+                holder.mProgress.setVisibility(View.GONE );
+                holder.mButton.setTextColor(context.getResources().getColor(R.color.gray));
+                if(fileIsExists(apkData.getApkName())){//文件夹中己存此APK安装包
+                    holder.mButton.setText(context.getResources().getString(R.string.install));
+                }else{
+                    holder.mButton.setText(context.getResources().getString(R.string.load));
+                }
+            }
+        }else{//正常状态
             holder.mButton.setEnabled(true);
+            holder.mProgress.setVisibility(View.GONE );
             holder.mButton.setTextColor(context.getResources().getColor(R.color.blue_low));
+            if(fileIsExists(apkData.getApkName())){//文件夹中己存此APK安装包
+                holder.mButton.setText(context.getResources().getString(R.string.install));
+            }else{
+                holder.mButton.setText(context.getResources().getString(R.string.load));
+            }
         }
         holder.mButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,19 +104,24 @@ public class RecyAdapter extends RecyclerView.Adapter<RecyAdapter.ViewHold>{
                 }
                 if(holder.mButton.getText().toString().equals(context.getResources().getString(R.string.load))){
                     Aria.download(context)
-                            .load(loadMsg.url)
-                            .setDownloadPath(SDPATH+loadMsg.name+".apk")
+                            .load(apkData.getApkUrl())
+                            .setDownloadPath(SDPATH+apkData.getApkName())
                             .start();
-                    holder.mButton.setText(context.getResources().getString(R.string.cancel));
+                    index=position;
+                    for(int i=0;i<mList.size();i++){
+                        mList.get(i).setLoad(false);
+                    }
+                    apkData.setLoad(true);
                 }else if(holder.mButton.getText().toString().equals(context.getResources().getString(R.string.cancel))){
                     Aria.download(context)
-                            .load(loadMsg.url)
+                            .load(apkData.getApkUrl())
                             .cancel();
-                    holder.mButton.setText(context.getResources().getString(R.string.load));
-                    isLoad=false;
                     index=-1;
-                    notifyDataSetChanged();
+                    for(int i=0;i<mList.size();i++){
+                        mList.get(i).setLoad(false);
+                    }
                 }
+                notifyDataSetChanged();
             }
         });
     }
@@ -120,5 +139,18 @@ public class RecyAdapter extends RecyclerView.Adapter<RecyAdapter.ViewHold>{
         TextView mTextView;
         Button mButton;
         HorizontalProgressBarWithNumber mProgress;
+    }
+
+    public boolean fileIsExists(String appName){
+        try{
+            File f=new File(SDPATH+appName);
+            if(!f.exists()){
+                return false;
+            }
+        }catch (Exception e) {
+            // TODO: handle exception
+            return false;
+        }
+        return true;
     }
 }
