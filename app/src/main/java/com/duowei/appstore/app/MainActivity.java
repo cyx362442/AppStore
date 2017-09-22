@@ -1,4 +1,4 @@
-package com.duowei.appstore;
+package com.duowei.appstore.app;
 
 import android.Manifest;
 import android.os.Build;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.duowei.appstore.R;
 import com.duowei.appstore.fragment.MainFragment;
 import com.duowei.appstore.fragment.SettingFragment;
 import com.duowei.appstore.util.OnPermissionCallback;

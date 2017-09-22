@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,9 +33,9 @@ public class MainFragment extends Fragment {
 
     private void initFragment() {
         BannerFragment bannerFragment = new BannerFragment();
-        AppLoadFragment loadFragment = new AppLoadFragment();
+        APKFragment apkFragment = new APKFragment();
         FragmentManager fm = getChildFragmentManager();
         fm.beginTransaction().replace(R.id.bannerFragment,bannerFragment).commit();
-        fm.beginTransaction().replace(R.id.loadFragment,loadFragment).commit();
+        fm.beginTransaction().replace(R.id.loadFragment,apkFragment).commit();
     }
 }
