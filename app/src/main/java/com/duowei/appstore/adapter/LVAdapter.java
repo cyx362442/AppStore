@@ -4,12 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.arialyy.aria.core.Aria;
@@ -39,11 +43,19 @@ public class LVAdapter extends BaseAdapter {
         mLayoutInflater = LayoutInflater.from(context);
     }
 
+    public void setList(List<APKData> list) {
+        mList = list;
+    }
+
     public void setProgress(int progress) {
         this.progress = progress;
     }
     public void setIndex(int index) {
         this.index=index;
+    }
+
+    public  int getIndex() {
+        return index;
     }
 
     @Override
@@ -63,7 +75,7 @@ public class LVAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup viewGroup) {
-        ViewHold hold;
+        final ViewHold hold;
         if (convertView == null) {
             hold = new ViewHold();
             convertView = mLayoutInflater.inflate(R.layout.listview_item, null);
@@ -78,7 +90,6 @@ public class LVAdapter extends BaseAdapter {
         final APKData apkData = mList.get(position);
         hold.mTextView.setText(apkData.getAppName());
         Glide.with(context).load(apkData.getImgUrl()).fitCenter().into(hold.mImageView);
-
         if (index != -1) {//存在下载的APK
             if (apkData.isLoad() == true) {//下载中的那个APK
                 hold.mButton.setEnabled(true);
@@ -86,7 +97,6 @@ public class LVAdapter extends BaseAdapter {
                 hold.mButton.setText(context.getResources().getString(R.string.cancel));
                 hold.mProgress.setVisibility(View.VISIBLE);
                 hold.mProgress.setProgress(progress);
-                apkData.setPro(progress + 1);
             } else {//不在下载中的APK,等待中^
                 hold.mButton.setEnabled(false);
                 hold.mProgress.setVisibility(View.GONE);

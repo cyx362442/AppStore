@@ -1,12 +1,18 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:background="@color/gray"
+              android:orientation="vertical"
              tools:context="com.duowei.appstore.fragment.APKFragment">
+            <TextView
+                android:id="@+id/tv_pro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="下载中……"/>
             <ListView
                 android:id="@+id/listView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
             </ListView>
-</FrameLayout>
+</LinearLayout>
