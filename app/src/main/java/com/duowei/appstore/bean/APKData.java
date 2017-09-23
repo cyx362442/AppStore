@@ -22,6 +22,7 @@ public class APKData {
 
     private String versionCode;
     private String versionName;
+    private String packageName;
     private String appName;
     private String updateTime;
     private String content;
@@ -31,22 +32,6 @@ public class APKData {
     private String imgUrl;
     private boolean isLoad=false;
     private int pro=0;
-
-    public int getPro() {
-        return pro;
-    }
-
-    public void setPro(int pro) {
-        this.pro = pro;
-    }
-
-    public boolean isLoad() {
-        return isLoad;
-    }
-
-    public void setLoad(boolean load) {
-        isLoad = load;
-    }
 
     public String getVersionCode() {
         return versionCode;
@@ -62,6 +47,14 @@ public class APKData {
 
     public void setVersionName(String versionName) {
         this.versionName = versionName;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 
     public String getAppName() {
@@ -118,5 +111,21 @@ public class APKData {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    public boolean isLoad() {
+        return isLoad;
+    }
+
+    public void setLoad(boolean load) {
+        isLoad = load;
+    }
+
+    public int getPro() {
+        return pro;
+    }
+
+    public void setPro(int pro) {
+        this.pro = pro;
     }
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+        <Preference
+            android:key="@string/clear"
+            android:title="@string/clear"></Preference>
+        <ListPreference
+            android:key="@string/service"
+            android:title="@string/service"
+            android:summary="点击查看"
+            android:entries="@array/serviceContact"
+            android:entryValues="@array/serviceContact"
+            android:dialogTitle="全国各地售后服务联系方式"></ListPreference>
+       <Preference
+           android:key="@string/version"
+           android:title="版本更新"></Preference>
+</PreferenceScreen>

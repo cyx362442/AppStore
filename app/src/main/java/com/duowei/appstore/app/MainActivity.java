@@ -1,66 +1,64 @@
 package com.duowei.appstore.app;
 
-import android.Manifest;
-import android.os.Build;
-import android.support.v4.app.FragmentTabHost;
-import android.support.v7.app.AppCompatActivity;
+import android.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.duowei.appstore.R;
 import com.duowei.appstore.fragment.MainFragment;
 import com.duowei.appstore.fragment.SettingFragment;
-import com.duowei.appstore.util.OnPermissionCallback;
-import com.duowei.appstore.util.PermissionManager;
 
-public class MainActivity extends AppCompatActivity {
-    private View indicator = null;
-    private FragmentTabHost mTabHost;
-    private int []title={R.string.main_title,R.string.setting_title};
-    private int[]layout={R.layout.home_indicator,R.layout.setting_indicator};
-    private Class[]cls={MainFragment.class,SettingFragment.class};
-
+public class MainActivity extends FragmentActivity implements TabHost.OnTabChangeListener {
+    private TabHost mTabHost;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        checkSD();
-        mTabHost = (FragmentTabHost) findViewById(R.id.tablehost);
-        initTabHost();
+        setupTabs();
     }
-
-    //检查内存是否可用
-    private void checkSD() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-//            setEnable(true);
-        } else {  //6.0处理
-            boolean hasPermission = PermissionManager.getInstance()
-                    .checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            if (hasPermission) {
-//                setEnable(true);
-            } else {
-//                setEnable(false);
-                PermissionManager.getInstance().requestPermission(this, new OnPermissionCallback() {
-                    @Override public void onSuccess(String... permissions) {
-//                        setEnable(true);
-                    }
-                    @Override public void onFail(String... permissions) {
-                        Toast.makeText(MainActivity.this,"没有文件读写权限",Toast.LENGTH_SHORT).show();
-//                        setEnable(false);
-                    }
-                }, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            }
+    // 初始化标签按钮
+    private void setupTabs() {
+        mTabHost = findViewById(R.id.tabhost);
+        mTabHost.setup();
+        // 生成底部自定义样式的按钮
+        Class[]cls={MainFragment.class,SettingFragment.class};
+        String[] title = new String[] { "主页", "设置"};
+        int[] tabIds = new int[] { R.id.tab1, R.id.tab2};
+        int[]layout={R.layout.home_indicator,R.layout.setting_indicator};
+        for (int i = 0; i < title.length; i++) {
+            View indicatorView = getIndicatorView(title[i], layout[i]);
+            mTabHost.addTab(mTabHost.newTabSpec(title[i]).setIndicator(indicatorView)
+                    .setContent(tabIds[i]));
         }
+        initFragment("主页");
+        mTabHost.setOnTabChangedListener(this);
     }
 
-    private void initTabHost() {
-        mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
-        for(int i=0;i<title.length;i++){
-            indicator = getIndicatorView(getResources().getString(title[i]),layout[i]);
-            mTabHost.addTab(mTabHost.newTabSpec(getResources().getString(title[i]))
-                    .setIndicator(indicator),cls[i],null);
+    @Override
+    public void onTabChanged(String tag) {
+        initFragment(tag);
+    }
+
+    private void initFragment(String tag) {
+        Fragment frag = null;
+        int contentViewID = 0;
+        if (tag.equals("主页")) {
+            frag = new MainFragment(); //自定义继承Fragment的UI，放了一个简单的显示文本标题的控件。
+            contentViewID = R.id.tab1;
+        } else if (tag.equals("设置")) {
+            frag = new SettingFragment();
+            contentViewID = R.id.tab2;
+        }
+        if (frag == null)
+            return;
+        android.app.FragmentManager manager = getFragmentManager();
+        if (manager.findFragmentByTag(tag) == null) {
+            android.app.FragmentTransaction ft = manager.beginTransaction();
+            ft.replace(contentViewID, frag, tag);
+            ft.commit();
         }
     }
 

@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="url">
-        <item>http://img.zcool.cn/community/01b72057a7e0790000018c1bf4fce0.png</item>
-        <item>http://img.zcool.cn/community/01fca557a7f5f90000012e7e9feea8.jpg</item>
-        <item>http://img.zcool.cn/community/01996b57a7f6020000018c1bedef97.jpg</item>
-        <item>http://img.zcool.cn/community/01700557a7f42f0000018c1bd6eb23.jpg</item>
-        <item>http://img.zcool.cn/community/01d28457d621800000018c1bb7877e.jpg</item>
-        <item>http://img.zcool.cn/community/01ae5656e1427f6ac72531cb72bac5.jpg</item>
+        <item>http://owm0ww8l4.bkt.clouddn.com/banner1.jpg</item>
+        <item>http://owm0ww8l4.bkt.clouddn.com/banner2.jpg</item>
+        <item>http://owm0ww8l4.bkt.clouddn.com/banner3.jpg</item>
     </array>
+    <string-array name="serviceContact">
+        <item>厦门总部\n地址：福建省 厦门市 湖里区 南山路403号天呈商业中心606-607室\n联系电话：0592-5651400、0592-5715427</item>
+        <item>福州公司\n地址：福建省 福州市 台江区 茶亭街道茶亭国际14层10.11单元\n联系电话：0591-86295820</item>
+        <item>杭州公司\n地址：浙江省 杭州市 西湖区 文三路天苑花园2栋18E\n联系电话：0571-86920571</item>
+        <item>成都公司\n地址：四川省 成都市 成华区 驷马桥融锦城SOHO 4栋2单元613\n联系电话：028-83245328</item>
+        <item>广州公司\n地址：广东省 广州市 番禹区 广华南路71号东瀚园商务大厦606A\n联系电话：020-23882251</item>
+        <item>武汉公司\n地址：湖北省 武汉市 洪山区 街道口群光广场三期群光上苑4栋702\n联系电话：027-87510558</item>
+        <item>南京公司\n地址：江苏省 南京市 雨花台区 小行路时光澔韵26栋1单元1601\n联系电话：025-85522701</item>
+    </string-array>
 </resources>

@@ -5,10 +5,10 @@ android {
     buildToolsVersion "26.0.0"
     defaultConfig {
         applicationId "com.duowei.appstore"
-        minSdkVersion 15
+        minSdkVersion 17
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode 4
+        versionName "V20170923"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -16,6 +16,12 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+}
+
+allprojects {
+    repositories {
+        maven { url "https://jitpack.io" }
     }
 }
 
@@ -27,6 +33,7 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support:recyclerview-v7:26.0.0-alpha1'
+    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:v1.9.7'
     compile 'com.arialyy.aria:aria-core:3.2.0'
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.google.code.gson:gson:2.8.0'

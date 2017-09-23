@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AppStore</string>
+    <string name="app_name">多维应用市场</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -11,4 +11,8 @@
     <string name="install">安装</string>
     <string name="update">更新</string>
     <string name="open">打开</string>
+
+    <string name="clear">清理安装包</string>
+    <string name="version">版本更新</string>
+    <string name="service">客服热线</string>
 </resources>

@@ -1,24 +1,27 @@
 package com.duowei.appstore.fragment;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
+
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import com.android.volley.VolleyError;
-import com.arialyy.annotations.Download;
 import com.arialyy.aria.core.Aria;
 import com.arialyy.aria.core.download.DownloadTask;
 import com.duowei.appstore.R;
-import com.duowei.appstore.adapter.LVAdapter;
+import com.duowei.appstore.adapter.RcyAdapter;
+import com.duowei.appstore.adapter.SpaceItemDecoration;
 import com.duowei.appstore.bean.APKData;
 import com.duowei.appstore.httputils.DownHTTP;
 import com.duowei.appstore.httputils.VolleyResultListener;
+import com.duowei.appstore.util.ToastUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -32,25 +35,25 @@ import java.util.List;
 public class APKFragment extends Fragment {
     private final String url="http://owm0ww8l4.bkt.clouddn.com/appstoreJson.txt";
     private List<APKData> mList;
-    private LVAdapter mLvAdapter;
-    private ListView mLv;
-    private TextView mTv;
+    private RcyAdapter mRcyAdapter;
+    private LinearLayout mLlLoad;
 
     public APKFragment() {
         // Required empty public constructor
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View inflate = inflater.inflate(R.layout.fragment_apk, container, false);
         mList=new ArrayList<>();
+        mLlLoad = inflate.findViewById(R.id.ll_load);
+        RecyclerView rv = inflate.findViewById(R.id.recycleView);
+        rv.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rv.addItemDecoration(new SpaceItemDecoration(5));
 
-        mTv = inflate.findViewById(R.id.tv_pro);
-        mLv = inflate.findViewById(R.id.listView);
-        mLvAdapter = new LVAdapter(mList,getActivity());
-        mLv.setAdapter(mLvAdapter);
+        mRcyAdapter = new RcyAdapter(mList);
+        rv.setAdapter(mRcyAdapter);
         Http_APk();
         Aria.download(this).addSchedulerListener(new MySchedulerListener());
         return inflate;
@@ -60,6 +63,8 @@ public class APKFragment extends Fragment {
         DownHTTP.postVolley(url, map, new VolleyResultListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                mLlLoad.setVisibility(View.GONE);
+                ToastUtil.showToast("加载失败");
             }
             @Override
             public void onResponse(String response) {
@@ -69,48 +74,40 @@ public class APKFragment extends Fragment {
                 List<APKData> list = gson.fromJson(s, new TypeToken<List<APKData>>() {
                 }.getType());
                 mList.addAll(list);
-                mLvAdapter.notifyDataSetChanged();
+                mRcyAdapter.notifyDataSetChanged();
+                mLlLoad.setVisibility(View.GONE);
             }
         });
     }
 
     private class MySchedulerListener extends Aria.DownloadSchedulerListener {
-
         @Override public void onTaskStart(DownloadTask task) {
-            mTv.setText(task.getConvertFileSize());
         }
-
         @Override public void onTaskStop(DownloadTask task) {
-//            Toast.makeText(MainActivity.this, "停止下载", Toast.LENGTH_SHORT).show();
         }
-
         @Override public void onTaskCancel(DownloadTask task) {
-//            Toast.makeText(MainActivity.this, "取消下载", Toast.LENGTH_SHORT).show();
+            Aria.download(this).removeAllTask();
         }
-
         @Override public void onTaskFail(DownloadTask task) {
-//            Toast.makeText(MainActivity.this, "下载失败", Toast.LENGTH_SHORT).show();
+//            ToastUtil.showToast("下载失败");
+//            mRcyAdapter.setIndex(-1);
+//            mRcyAdapter.notifyDataSetChanged();
         }
-
         @Override public void onTaskComplete(DownloadTask task) {
-//            Toast.makeText(MainActivity.this, "下载完成", Toast.LENGTH_SHORT).show();
-            mLvAdapter.setIndex(-1);
-            mLvAdapter.notifyDataSetChanged();
+            mRcyAdapter.setIndex(-1);
+            mRcyAdapter.notifyDataSetChanged();
         }
-
         @Override public void onTaskRunning(DownloadTask task) {
             long currentProgress = task.getCurrentProgress();
             long fileSize = task.getFileSize();
-            final int i = (int) ((currentProgress * 100) / fileSize);
-            mLvAdapter.setProgress(i);
-            mLvAdapter.notifyDataSetChanged();
+            int i = (int) ((currentProgress * 100) / fileSize);
+            mRcyAdapter.setProgress(i);
+            mRcyAdapter.notifyDataSetChanged();
         }
     }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mLvAdapter.setIndex(-1);
-        Aria.download(this).getTaskList().remove(0);
+        mRcyAdapter.setIndex(-1);
     }
 }

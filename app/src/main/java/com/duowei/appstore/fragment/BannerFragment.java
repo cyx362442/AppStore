@@ -1,8 +1,8 @@
 package com.duowei.appstore.fragment;
 
 
+import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import com.duowei.appstore.R;
 import com.duowei.appstore.bannerload.GlideImageLoader;
 import com.youth.banner.Banner;
-import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
 import com.youth.banner.transformer.CubeOutTransformer;
 

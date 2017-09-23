@@ -1,25 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<TabHost
+    android:id="@+id/tabhost"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.duowei.appstore.app.MainActivity">
-    <FrameLayout
-        android:id="@+id/realtabcontent"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        ></FrameLayout>
-    <android.support.v4.app.FragmentTabHost
-        android:id="@+id/tablehost"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
         <FrameLayout
-            android:id="@+id/tablcontent"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"></FrameLayout>
-    </android.support.v4.app.FragmentTabHost>
-</LinearLayout>
+            android:id="@android:id/tabcontent"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <FrameLayout
+                android:id="@+id/tab1"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"></FrameLayout>
+            <FrameLayout
+                android:id="@+id/tab2"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"></FrameLayout>
+        </FrameLayout>
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:tag="tabs"></TabWidget>
+    </LinearLayout>
+</TabHost>
