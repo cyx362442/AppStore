@@ -15,4 +15,5 @@
     <string name="clear">清理安装包</string>
     <string name="version">版本更新</string>
     <string name="service">客服热线</string>
+    <string name="exit">退出</string>
 </resources>

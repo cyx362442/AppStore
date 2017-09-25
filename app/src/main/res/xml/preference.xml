@@ -13,4 +13,7 @@
        <Preference
            android:key="@string/version"
            android:title="版本更新"></Preference>
+        <PreferenceScreen
+            android:key="@string/exit"
+            android:title="退出程序"></PreferenceScreen>
 </PreferenceScreen>

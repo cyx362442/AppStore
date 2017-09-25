@@ -66,13 +66,14 @@ public class SettingFragment extends Fragment {
             mPreference = findPreference(getString(R.string.clear));
             ListPreference listPreference = (ListPreference) findPreference(getString(R.string.service));
             Preference preference2 = findPreference(getString(R.string.version));
+            Preference preferenceExit = findPreference(getString(R.string.exit));
             mFile = new File(SDPATH,"/appstore/");
             mPreference.setSummary("大小："+getFileSizes(mFile)/1024/1024+"M");
             preference2.setSummary(mVersionName);
             mPreference.setOnPreferenceClickListener(this);
             listPreference.setOnPreferenceClickListener(this);
             preference2.setOnPreferenceClickListener(this);
-
+            preferenceExit.setOnPreferenceClickListener(this);
         }
 
         @Override
@@ -91,22 +92,10 @@ public class SettingFragment extends Fragment {
                             JSONObject jsonObject = new JSONObject(response);
                             String versionCode = jsonObject.getString("versionCode");
                             String msg = jsonObject.getString("msg");
-                            final String url = jsonObject.getString("url");
-                            final String name = jsonObject.getString("name");
+                            String url = jsonObject.getString("url");
+                            String name = jsonObject.getString("name");
                             if(Integer.parseInt(versionCode)>mVersionCode){
-                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                                builder.setIcon(R.mipmap.logo);
-                                builder.setMessage(msg);
-                                builder.setTitle("发现新版本，是否升级？");
-                                builder.setNegativeButton("暂不升级",null);
-                                builder.setPositiveButton("立即升级", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        UpdateFragment updateFragment = UpdateFragment.newInstance(url,name);
-                                        updateFragment.show(getFragmentManager(),getString(R.string.update));
-                                    }
-                                });
-                                builder.show();
+                                showUpdatDialog(msg, url, name);
                             }else{
                                 ToastUtil.showToast("当前己是最新版");
                             }
@@ -115,8 +104,26 @@ public class SettingFragment extends Fragment {
                         }
                     }
                 });
+            }else if(preference.getKey()==getString(R.string.exit)){
+                getActivity().finish();
             }
             return false;
+        }
+
+        private void showUpdatDialog(String msg, final String url, final String name) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setIcon(R.mipmap.logo96);
+            builder.setMessage(msg);
+            builder.setTitle("发现新版本，是否升级？");
+            builder.setNegativeButton("暂不升级",null);
+            builder.setPositiveButton("立即升级", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    UpdateFragment updateFragment = UpdateFragment.newInstance(url,name);
+                    updateFragment.show(getFragmentManager(),getString(R.string.update));
+                }
+            });
+            builder.show();
         }
 
         private boolean deleteFile() {

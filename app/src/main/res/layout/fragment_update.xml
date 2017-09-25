@@ -4,17 +4,17 @@
              android:layout_height="match_parent"
              tools:context="com.duowei.appstore.fragment.UpdateFragment">
             <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="APK下载中……"
             android:padding="5dp"
             android:textColor="@color/blue_low"
-            android:drawableLeft="@mipmap/logo"
+            android:drawableLeft="@mipmap/logo96"
             android:gravity="center_vertical"
             android:textSize="20dp"/>
         <ProgressBar

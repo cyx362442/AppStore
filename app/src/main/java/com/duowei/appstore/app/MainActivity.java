@@ -1,30 +1,102 @@
 package com.duowei.appstore.app;
 
 import android.app.Fragment;
+import android.content.DialogInterface;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
 import com.duowei.appstore.R;
 import com.duowei.appstore.fragment.MainFragment;
 import com.duowei.appstore.fragment.SettingFragment;
+import com.duowei.appstore.fragment.UpdateFragment;
+import com.duowei.appstore.httputils.DownHTTP;
+import com.duowei.appstore.httputils.VolleyResultListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
 
 public class MainActivity extends FragmentActivity implements TabHost.OnTabChangeListener {
+
+    private static final String urlUpdate="http://owm0ww8l4.bkt.clouddn.com/appstore.txt";
+    private static int mVersionCode;
     private TabHost mTabHost;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupTabs();
+        getAPPVersionName();
+        checkVersion();
+
+        hideBar();
     }
+
+    private void hideBar() {
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                | View.SYSTEM_UI_FLAG_IMMERSIVE;
+        decorView.setSystemUiVisibility(uiOptions);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+    }
+
+    private void checkVersion() {
+        DownHTTP.getVolley(urlUpdate, new VolleyResultListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    String versionCode = jsonObject.getString("versionCode");
+                    String msg = jsonObject.getString("msg");
+                    String url = jsonObject.getString("url");
+                    String name = jsonObject.getString("name");
+                    if(Integer.parseInt(versionCode)>mVersionCode){
+                        showUpdateDialog(msg, url, name);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void showUpdateDialog(String msg, final String url, final String name) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setIcon(R.mipmap.logo96);
+        builder.setTitle("发现新版本，是否升级？");
+        builder.setMessage(msg);
+        builder.setNegativeButton("暂不升级",null);
+        builder.setPositiveButton("立即升级", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                UpdateFragment updateFragment = UpdateFragment.newInstance(url,name);
+                updateFragment.show(getFragmentManager(),getString(R.string.update));
+            }
+        });
+    }
+
     // 初始化标签按钮
     private void setupTabs() {
         mTabHost = findViewById(R.id.tabhost);
         mTabHost.setup();
         // 生成底部自定义样式的按钮
-        Class[]cls={MainFragment.class,SettingFragment.class};
         String[] title = new String[] { "主页", "设置"};
         int[] tabIds = new int[] { R.id.tab1, R.id.tab2};
         int[]layout={R.layout.home_indicator,R.layout.setting_indicator};
@@ -67,5 +139,16 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
         TextView tv = v.findViewById(R.id.tabText);
         tv.setText(name);
         return v;
+    }
+
+    //当前APP版本号
+    public void getAPPVersionName() {
+        PackageManager manager = getPackageManager();
+        try {
+            PackageInfo info = manager.getPackageInfo(getPackageName(), 0);
+            mVersionCode = info.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
