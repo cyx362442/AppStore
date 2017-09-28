@@ -2,11 +2,9 @@ package com.duowei.appstore.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.os.Handler;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,7 +93,8 @@ public class APKFragment extends Fragment {
         }
         @Override public void onTaskComplete(DownloadTask task) {
             mRcyAdapter.setIndex(-1);
-            mRcyAdapter.notifyDataSetChanged();
+//            mRcyAdapter.notifyDataSetChanged();
+            mRcyAdapter.InstallApk();
         }
         @Override public void onTaskRunning(DownloadTask task) {
             long currentProgress = task.getCurrentProgress();

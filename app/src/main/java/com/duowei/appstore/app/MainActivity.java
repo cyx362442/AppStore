@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -15,16 +14,17 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.duowei.appstore.R;
+import com.duowei.appstore.event.FinishEvent;
 import com.duowei.appstore.fragment.MainFragment;
 import com.duowei.appstore.fragment.SettingFragment;
 import com.duowei.appstore.fragment.UpdateFragment;
 import com.duowei.appstore.httputils.DownHTTP;
 import com.duowei.appstore.httputils.VolleyResultListener;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.File;
 
 public class MainActivity extends FragmentActivity implements TabHost.OnTabChangeListener {
 
@@ -35,11 +35,17 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        EventBus.getDefault().register(this);
         setupTabs();
         getAPPVersionName();
         checkVersion();
 
         hideBar();
+    }
+
+    @Subscribe
+    public void finishActivity(FinishEvent evnet){
+        finish();
     }
 
     private void hideBar() {
@@ -90,6 +96,7 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
                 updateFragment.show(getFragmentManager(),getString(R.string.update));
             }
         });
+        builder.show();
     }
 
     // 初始化标签按钮
@@ -150,5 +157,11 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
     }
 }

@@ -7,8 +7,8 @@ android {
         applicationId "com.duowei.appstore"
         minSdkVersion 17
         targetSdkVersion 22
-        versionCode 6
-        versionName "V20170925"
+        versionCode 10
+        versionName "V20170927"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

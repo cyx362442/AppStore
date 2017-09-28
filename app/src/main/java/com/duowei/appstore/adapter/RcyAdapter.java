@@ -18,7 +18,10 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.duowei.appstore.R;
 import com.duowei.appstore.app.MyApp;
 import com.duowei.appstore.bean.APKData;
+import com.duowei.appstore.event.FinishEvent;
 import com.duowei.appstore.util.ToastUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.List;
@@ -33,6 +36,8 @@ public class RcyAdapter extends BaseQuickAdapter<APKData>{
     private List<APKData>mList;
     private int mProgress=0;
     private static int index=-1;
+    private String apkName="";
+
     public RcyAdapter(List<APKData> data) {
         super(R.layout.listview_item, data);
         this.mList=data;
@@ -81,7 +86,12 @@ public class RcyAdapter extends BaseQuickAdapter<APKData>{
             if (fileIsExists(apkData.getApkName())&&isAvilible(apkData.getPackageName())==false) {//文件夹中己存此APK安装包
                 baseViewHolder.setText(R.id.btn_load,mContext.getString(R.string.install));
             } else if(isAvilible(apkData.getPackageName())){//己安装了此APP
-                baseViewHolder.setText(R.id.btn_load,mContext.getString(R.string.open));
+                int currentVersion = getCurrentVersion(apkData);
+                if(Integer.parseInt(apkData.getVersionCode())> currentVersion){
+                    baseViewHolder.setText(R.id.btn_load,mContext.getString(R.string.update));
+                }else{
+                    baseViewHolder.setText(R.id.btn_load,mContext.getString(R.string.open));
+                }
             }else {
                 baseViewHolder.setText(R.id.btn_load,mContext.getString(R.string.load));
             }
@@ -97,7 +107,8 @@ public class RcyAdapter extends BaseQuickAdapter<APKData>{
                     file.mkdirs();
                 }
                 String btnText = btnLoad.getText().toString();
-                if (btnText.equals(mContext.getString(R.string.load))) {
+                if (btnText.equals(mContext.getString(R.string.load))||btnText.equals(mContext.getString(R.string.update))) {
+                    apkName=apkData.getApkName();
                     Aria.download(mContext)
                             .load(apkData.getApkUrl())
                             .setDownloadPath(SDPATH + "/" + apkData.getApkName())
@@ -116,20 +127,41 @@ public class RcyAdapter extends BaseQuickAdapter<APKData>{
                         mList.get(i).setLoad(false);
                     }
                 } else if (btnText.equals(mContext.getString(R.string.install))) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    // 由于没有在Activity环境下启动Activity,设置下面的标签
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.setDataAndType(Uri.fromFile(
-                            new File(SDPATH, "/" + apkData.getApkName())),
-                            "application/vnd.android.package-archive");
-                    mContext.startActivity(intent);
+                    apkName=apkData.getApkName();
+                    InstallApk();
                 }else if(btnText.equals(mContext.getString(R.string.open))){
                     startAPP(apkData.getPackageName());
+                    EventBus.getDefault().post(new FinishEvent());
                 }
                 notifyDataSetChanged();
             }
         });
     }
+
+    public void InstallApk() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        // 由于没有在Activity环境下启动Activity,设置下面的标签
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setDataAndType(Uri.fromFile(
+                new File(SDPATH, "/" + apkName)),
+                "application/vnd.android.package-archive");
+        mContext.startActivity(intent);
+        EventBus.getDefault().post(new FinishEvent());
+    }
+
+    private int getCurrentVersion(APKData apkData) {
+        int currentVersion=0;
+        PackageManager packageManager = mContext.getPackageManager();
+        try {
+            PackageInfo packageInfo = packageManager.getPackageInfo(apkData.getPackageName(),
+                    PackageManager.GET_ACTIVITIES);
+            currentVersion = packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return currentVersion;
+    }
+
     public boolean fileIsExists(String appName){
         try{
             File f=new File(SDPATH+"/"+appName);
