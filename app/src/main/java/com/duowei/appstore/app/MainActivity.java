@@ -40,7 +40,8 @@ public class MainActivity extends FragmentActivity implements TabHost.OnTabChang
         getAPPVersionName();
         checkVersion();
 
-        hideBar();
+//        hideBar();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
     }
 
     @Subscribe
